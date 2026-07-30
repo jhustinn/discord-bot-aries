@@ -41,10 +41,14 @@ function startKeepAliveServer() {
 
   // CORS for admin dashboard
   app.use(cors({
-    origin: ['https://aries-verification-admin.vercel.app', 'http://localhost:5173'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'x-api-key']
+    origin: true, // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'x-api-key', 'Authorization'],
+    credentials: true
   }));
+
+  // Handle preflight requests
+  app.options('*', cors());
 
   app.use(express.json());
 
