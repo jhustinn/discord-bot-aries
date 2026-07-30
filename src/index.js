@@ -11,6 +11,14 @@ const interactionHandler = require('./handlers/interactions');
 const messageHandler = require('./handlers/messages');
 const { createDiscordRouter } = require('./handlers/discordApi');
 
+// New API Routes
+const { createPlayersRouter } = require('./routes/players');
+const { createTeamsRouter } = require('./routes/teams');
+const { createWarsRouter } = require('./routes/wars');
+const { createPointsRouter } = require('./routes/points');
+const { createSeasonsRouter } = require('./routes/seasons');
+const { createRBACRouter } = require('./routes/rbac');
+
 // ─── Validate Environment ─────────────────────────────────────────────────────
 config.validateEnv();
 
@@ -53,9 +61,24 @@ function startKeepAliveServer() {
   // Discord API routes
   app.use('/api/discord', createDiscordRouter(client));
 
+  // Clan Management API routes
+  app.use('/api/players', createPlayersRouter());
+  app.use('/api/teams', createTeamsRouter());
+  app.use('/api/wars', createWarsRouter());
+  app.use('/api/points', createPointsRouter());
+  app.use('/api/seasons', createSeasonsRouter());
+  app.use('/api/rbac', createRBACRouter());
+
   app.listen(config.PORT, () => {
     logger.info('Server', `Listening on port ${config.PORT}`);
-    logger.info('Server', 'Discord API available at /api/discord/*');
+    logger.info('Server', 'API endpoints available:');
+    logger.info('Server', '  - /api/discord/* (Discord management)');
+    logger.info('Server', '  - /api/players/* (Player management)');
+    logger.info('Server', '  - /api/teams/* (Team management)');
+    logger.info('Server', '  - /api/wars/* (War management)');
+    logger.info('Server', '  - /api/points/* (Points management)');
+    logger.info('Server', '  - /api/seasons/* (Season management)');
+    logger.info('Server', '  - /api/rbac/* (RBAC management)');
   });
 }
 
