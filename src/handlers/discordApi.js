@@ -337,6 +337,27 @@ function createDiscordRouter(client) {
     }
   });
 
+  // ─── Update Ticket Status ───────────────────────────────────────────────
+  router.put('/tickets/:ticketId/status', async (req, res) => {
+    try {
+      const { ticketId } = req.params;
+      const { status } = req.body;
+
+      if (!['APPROVED', 'REJECTED'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status. Must be APPROVED or REJECTED' });
+      }
+
+      const database = require('../services/database');
+      const ticket = await database.updateTicketStatus(ticketId, status);
+
+      logger.info('API', 'Ticket status updated', { ticketId, status });
+      res.json({ success: true, ticket });
+    } catch (error) {
+      logger.error('API', 'Update ticket status failed', { error: error.message });
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   return router;
 }
 
