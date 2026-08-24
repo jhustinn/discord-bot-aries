@@ -2,6 +2,15 @@
 const { ChannelType, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const config = require('../config');
 const logger = require('../utils/logger');
+const database = require('../services/database');
+
+function buildTicketName(ticketNumber, username) {
+  const safeUsername = username
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, '')
+    .slice(0, 20) || 'user';
+  return `open-ticket-${ticketNumber}-${safeUsername}`;
+}
 
 async function handleOpenTicket(interaction, activeTickets, client) {
   const guild = interaction.guild;
@@ -22,8 +31,11 @@ async function handleOpenTicket(interaction, activeTickets, client) {
   const categoryId = config.TICKET_CATEGORY_ID;
 
   try {
+    const ticketNumber = await database.getNextTicketNumber();
+    const channelName = buildTicketName(ticketNumber, user.username);
+
     const channel = await guild.channels.create({
-      name: `open-ticket-${user.username}`,
+      name: channelName,
       type: ChannelType.GuildText,
       parent: categoryId || undefined,
       permissionOverwrites: [

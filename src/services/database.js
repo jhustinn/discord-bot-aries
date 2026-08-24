@@ -152,6 +152,19 @@ async function getTicketById(ticketId) {
   return data;
 }
 
+async function getNextTicketNumber() {
+  const { count, error } = await supabase
+    .from('verification_tickets')
+    .select('*', { count: 'exact', head: true });
+
+  if (error) {
+    logger.warn('Database', 'Failed to count tickets, using timestamp fallback', { error: error.message });
+    return Date.now() % 100000;
+  }
+
+  return (count || 0) + 1;
+}
+
 async function getStats() {
   const [usersResult, ticketsResult, pendingResult] = await Promise.all([
     supabase.from('discord_users').select('*', { count: 'exact', head: true }),
@@ -173,5 +186,6 @@ module.exports = {
   updateTicketStatus,
   getTicketById,
   createPlayerFromTicket,
+  getNextTicketNumber,
   getStats
 };
