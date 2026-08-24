@@ -146,6 +146,13 @@ client.on('interactionCreate', async (interaction) => {
 // ─── Event: Message Handler ───────────────────────────────────────────────────
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
+
+  // Enforce locked tickets: delete any member message in closed ticket channels
+  if (message.channel.name?.startsWith('closed-ticket-')) {
+    await message.delete().catch(() => {});
+    return;
+  }
+
   if (!message.channel.name?.startsWith('open-ticket-')) return;
   if (message.attachments.size ===0 && !message.content?.trim()) return;
 
