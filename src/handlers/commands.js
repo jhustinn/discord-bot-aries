@@ -57,7 +57,7 @@ async function handleVerifyClose(interaction, activeTickets) {
   const channel = interaction.channel;
   const config = require('../config');
 
-  if (!channel.name.startsWith('open-ticket-')) {
+  if (!channel.name.startsWith('open-ticket-') && !channel.name.startsWith('closed-ticket-')) {
     await interaction.reply({
       content: 'This command can only be used in verification ticket channels.',
       ephemeral: true
@@ -65,40 +65,82 @@ async function handleVerifyClose(interaction, activeTickets) {
     return;
   }
 
-  // Remove from active tracking
+  // Find ticket opener from active tracking
+  let openerId = null;
   for (const [userId, channelId] of activeTickets.entries()) {
     if (channelId === channel.id) {
+      openerId = userId;
       activeTickets.delete(userId);
       break;
     }
   }
 
+  // Fallback: find opener from member overwrites (works even after bot restart)
+  if (!openerId) {
+    for (const [id, overwrite] of channel.permissionOverwrites.cache) {
+      if (id !== interaction.guild.id && id !== interaction.client.user.id && overwrite.type === 1) {
+        openerId = id;
+        break;
+      }
+    }
+  }
+
   // Rename channel to closed
-  const closedName = channel.name.replace('open-ticket-', 'closed-ticket-');
+  const closedName = channel.name.startsWith('closed-ticket-')
+    ? channel.name
+    : channel.name.replace('open-ticket-', 'closed-ticket-');
   await channel.setName(closedName);
 
   // Move to closed category if configured
   if (config.CLOSED_CATEGORY_ID) {
     try {
-      await channel.setParent(config.CLOSED_CATEGORY_ID);
+      await channel.setParent(config.CLOSED_CATEGORY_ID, { lockPermissions: false });
       logger.info('Commands', 'Ticket moved to closed category', { channel: closedName });
     } catch (err) {
       logger.warn('Commands', 'Could not move to closed category', { error: err.message });
     }
   }
 
-  // Remove send permissions for user
-  const permissionOverwrites = channel.permissionOverwrites.cache;
-  for (const [id, overwrite] of permissionOverwrites) {
-    if (id !== interaction.guild.id && id !== interaction.client.user.id) {
-      await channel.permissionOverwrites.edit(id, {
-        SendMessages: false
+  // Lock ticket opener: no more messages, reactions, or threads
+  if (openerId) {
+    try {
+      await channel.permissionOverwrites.edit(openerId, {
+        SendMessages: false,
+        SendMessagesInThreads: false,
+        CreatePublicThreads: false,
+        CreatePrivateThreads: false,
+        AddReactions: false
       });
+      logger.info('Commands', 'Ticket opener locked', { channelId: channel.id, openerId });
+    } catch (err) {
+      logger.error('Commands', 'Could not lock ticket opener', { error: err.message, openerId });
     }
   }
 
-  await interaction.reply({ content: 'Ticket closed and archived.' });
-  logger.info('Commands', 'Ticket closed', { channel: closedName });
+  // Sweep any other non-admin member overwrites as safety net
+  for (const [id, overwrite] of channel.permissionOverwrites.cache) {
+    if (id !== interaction.guild.id && id !== interaction.client.user.id && overwrite.type === 1) {
+      try {
+        await channel.permissionOverwrites.edit(id, { SendMessages: false });
+      } catch (err) {
+        logger.warn('Commands', 'Could not lock overwrite', { id, error: err.message });
+      }
+    }
+  }
+
+  const closedEmbed = new EmbedBuilder()
+    .setColor('#ED4245')
+    .setTitle('Ticket Closed')
+    .setDescription(
+      'This verification ticket has been closed and archived.\n' +
+      'You can no longer send messages in this channel.\n\n' +
+      'If you need help, please open a new ticket.'
+    )
+    .setTimestamp();
+
+  await channel.send({ embeds: [closedEmbed] });
+  await interaction.reply({ content: 'Ticket closed, archived, and locked.', ephemeral: true });
+  logger.info('Commands', 'Ticket closed', { channel: closedName, openerId });
 }
 
 async function handleVerifyStats(interaction) {
