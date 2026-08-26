@@ -2,7 +2,6 @@
 const { ChannelType, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const config = require('../config');
 const logger = require('../utils/logger');
-const database = require('../services/database');
 
 function buildTicketName(ticketNumber, username) {
   const safeUsername = username
@@ -10,6 +9,19 @@ function buildTicketName(ticketNumber, username) {
     .replace(/[^a-z0-9_-]/g, '')
     .slice(0, 20) || 'user';
   return `open-ticket-${ticketNumber}-${safeUsername}`;
+}
+
+function getNextTicketNumber(guild) {
+  let max = 0;
+  const regex = /-ticket-(\d+)-/;
+  for (const [, channel] of guild.channels.cache) {
+    const match = channel.name?.match(regex);
+    if (match) {
+      const num = parseInt(match[1]);
+      if (num > max) max = num;
+    }
+  }
+  return max + 1;
 }
 
 async function handleOpenTicket(interaction, activeTickets, client) {
@@ -31,7 +43,7 @@ async function handleOpenTicket(interaction, activeTickets, client) {
   const categoryId = config.TICKET_CATEGORY_ID;
 
   try {
-    const ticketNumber = await database.getNextTicketNumber();
+    const ticketNumber = getNextTicketNumber(guild);
     const channelName = buildTicketName(ticketNumber, user.username);
 
     const channel = await guild.channels.create({
