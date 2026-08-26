@@ -48,9 +48,8 @@ function getVerificationPanel() {
 
 async function handleVerifyPanel(interaction) {
   const panel = getVerificationPanel();
-  await interaction.channel.send(panel);
-  await interaction.reply({ content: 'Verification panel posted.', ephemeral: true });
-  logger.info('Commands', 'Verification panel posted', { channel: interaction.channel.name });
+  await interaction.reply({ ...panel, flags: require('discord.js').MessageFlags.Ephemeral });
+  logger.info('Commands', 'Verification panel posted (ephemeral)', { channel: interaction.channel.name, by: interaction.user.tag });
 }
 
 async function handleVerifyClose(interaction, activeTickets) {
