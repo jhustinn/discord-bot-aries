@@ -1,0 +1,21 @@
+[
+  {
+    "season_id": "8305243b-7acb-4e6e-943f-3265c3ab17f7",
+    "season_name": "Season 19",
+    "season_number": "1",
+    "description": "Season 19",
+    "start_date": "2026-07-30 08:51:11.757+00",
+    "end_date": null,
+    "duration_days": "30",
+    "status": "ACTIVE",
+    "total_wars": "0",
+    "wins": "0",
+    "losses": "0",
+    "draws": "0",
+    "total_points_earned": "0",
+    "total_points_spent": "0",
+    "total_participants": "0",
+    "created_at": "2026-07-30 08:51:11.010464+00",
+    "updated_at": "2026-07-30 08:51:11.010464+00"
+  }
+]

@@ -113,6 +113,22 @@ async function processVerification(message) {
 
     await database.insertTicket(ticketData);
 
+    // Broadcast Real-time Notification
+    const { sendNotification } = require('../services/apiClient');
+    sendNotification({
+      type: 'ticket_new',
+      title: 'New Verification Ticket',
+      message: `Player "${inGameName}" submitted a verification screenshot`,
+      link: '/tickets',
+      icon: '🎫',
+      meta: {
+        user_id: user.id,
+        in_game_name: inGameName,
+        player_id: ticketData.player_id,
+        player_level: ticketData.player_level
+      }
+    }).catch(() => {});
+
     //6. Send success
     let ocrInfo = '';
     if (ocrResult.success && ocrResult.data) {

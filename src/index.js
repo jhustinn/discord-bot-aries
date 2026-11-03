@@ -52,6 +52,15 @@ function startKeepAliveServer() {
 
   app.use(express.json());
 
+  // Static uploads directory for screenshots
+  const path = require('path');
+  const fs = require('fs');
+  const uploadsDir = path.join(__dirname, '../uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  app.use('/uploads', express.static(uploadsDir));
+
   // Health check
   app.get('/', (req, res) => {
     res.json({
@@ -62,8 +71,108 @@ function startKeepAliveServer() {
     });
   });
 
+  // ─── Public Transcript Viewer & API Endpoints ──────────────────────────────
+  app.get('/transcript/:ticketId', async (req, res) => {
+    try {
+      const { ticketId } = req.params;
+      const transcriptService = require('./services/transcript');
+      const database = require('./services/database');
+
+      const archivedData = await transcriptService.getTicketTranscript(ticketId);
+      const ticket = await database.getTicketById(ticketId).catch(() => null);
+
+      if (!ticket && !archivedData) {
+        return res.status(404).send('<h1 style="font-family:sans-serif; text-align:center; margin-top:50px;">404 - Transcript Not Found</h1>');
+      }
+
+      let liveMessages = [];
+      const guild = client.guilds.cache.first();
+      if (guild && ticket) {
+        const channelId = activeTickets.get(ticket.user_id);
+        let channel = channelId ? guild.channels.cache.get(channelId) : null;
+        if (!channel) {
+          channel = guild.channels.cache.find(c =>
+            (c.name.startsWith('open-ticket-') || c.name.startsWith('closed-ticket-')) &&
+            (c.permissionOverwrites.cache.has(ticket.user_id) || c.name.toLowerCase().includes(ticket.in_game_name?.toLowerCase() || 'xyz'))
+          );
+        }
+        if (channel && channel.isTextBased()) {
+          liveMessages = await transcriptService.fetchChannelMessages(channel, 100);
+        }
+      }
+
+      const messages = (archivedData && archivedData.messages && archivedData.messages.length > 0)
+        ? archivedData.messages
+        : liveMessages;
+
+      const html = transcriptService.generateTranscriptHtml({ messages, ...archivedData }, ticket);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(html);
+    } catch (err) {
+      logger.error('API', 'Public transcript error', { error: err.message });
+      res.status(500).send('Error rendering transcript: ' + err.message);
+    }
+  });
+
+  app.get('/api/transcript/:ticketId', async (req, res) => {
+    try {
+      const { ticketId } = req.params;
+      const transcriptService = require('./services/transcript');
+      const database = require('./services/database');
+
+      const archivedData = await transcriptService.getTicketTranscript(ticketId);
+      const ticket = await database.getTicketById(ticketId).catch(() => null);
+
+      if (!ticket && !archivedData) {
+        return res.status(404).json({ error: 'Transcript not found' });
+      }
+
+      let liveMessages = [];
+      const guild = client.guilds.cache.first();
+      if (guild && ticket) {
+        const channelId = activeTickets.get(ticket.user_id);
+        let channel = channelId ? guild.channels.cache.get(channelId) : null;
+        if (!channel) {
+          channel = guild.channels.cache.find(c =>
+            (c.name.startsWith('open-ticket-') || c.name.startsWith('closed-ticket-')) &&
+            c.permissionOverwrites.cache.has(ticket.user_id)
+          );
+        }
+        if (channel && channel.isTextBased()) {
+          liveMessages = await transcriptService.fetchChannelMessages(channel, 100);
+        }
+      }
+
+      const messages = (archivedData && archivedData.messages && archivedData.messages.length > 0)
+        ? archivedData.messages
+        : liveMessages;
+
+      const format = req.query.format || 'json';
+      if (format === 'raw' || format === 'text') {
+        const text = transcriptService.generateTranscriptText(messages, ticket);
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        return res.send(text);
+      }
+
+      res.json({
+        success: true,
+        ticketId,
+        ticket,
+        messageCount: messages.length,
+        messages,
+        screenshotUrl: ticket?.permanent_image_url || null,
+        ocrText: ticket?.extracted_text || null,
+        archivedAt: archivedData?.archivedAt || null,
+        publicUrl: `http://localhost:3000/transcript/${ticketId}`
+      });
+    } catch (err) {
+      logger.error('API', 'Public transcript JSON error', { error: err.message });
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // Discord API routes
-  app.use('/api/discord', createDiscordRouter(client));
+  app.use('/api/discord', createDiscordRouter(client, activeTickets));
 
   // Clan Management API routes
   app.use('/api/players', createPlayersRouter());
@@ -94,17 +203,22 @@ async function registerCommands() {
   try {
     logger.info('Commands', 'Registering slash commands...');
     
-    if (config.GUILD_ID) {
-      await rest.put(Routes.applicationGuildCommands(client.user.id, config.GUILD_ID), {
-        body: commandHandler.commands.map(c => c.toJSON())
-      });
+    // Register instantly to all connected guilds
+    const guilds = client.guilds.cache;
+    if (guilds.size > 0) {
+      for (const [guildId, guild] of guilds) {
+        await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), {
+          body: commandHandler.commands.map(c => c.toJSON())
+        });
+        logger.info('Commands', `Slash commands registered instantly for guild: ${guild.name} (${guildId})`);
+      }
     } else {
+      // Fallback global registration
       await rest.put(Routes.applicationCommands(client.user.id), {
         body: commandHandler.commands.map(c => c.toJSON())
       });
+      logger.info('Commands', 'Slash commands registered globally');
     }
-    
-    logger.info('Commands', 'Slash commands registered successfully');
   } catch (error) {
     logger.error('Commands', 'Registration failed', { error: error.message });
   }
@@ -139,6 +253,21 @@ client.on('interactionCreate', async (interaction) => {
       case 'verify-stats':
         await commandHandler.handleVerifyStats(interaction);
         break;
+      case 'rank-check':
+        await commandHandler.handleRankCheck(interaction);
+        break;
+      case 'rank-history':
+        await commandHandler.handleRankHistory(interaction);
+        break;
+      case 'record-submit':
+        await commandHandler.handleRecordSubmit(interaction);
+        break;
+      case 'record-board':
+        await commandHandler.handleRecordBoard(interaction);
+        break;
+      case 'rbac':
+        await commandHandler.handleRbac(interaction);
+        break;
     }
   }
 });
@@ -151,6 +280,77 @@ client.on('messageCreate', async (message) => {
   if (message.channel.name?.startsWith('closed-ticket-')) {
     await message.delete().catch(() => {});
     return;
+  }
+
+  // Automatic Clan Records Submission Listener (#submissions channel)
+  if (message.channel.name?.includes('submission') && message.attachments.size > 0) {
+    const imageAttachment = message.attachments.find(a => a.contentType?.startsWith('image/'));
+    if (imageAttachment) {
+      try {
+        const axios = require('axios');
+        const imageRes = await axios.get(imageAttachment.url, { responseType: 'arraybuffer' });
+        const imageBuffer = Buffer.from(imageRes.data);
+
+        const ocrGemini = require('./services/ocr-gemini');
+        const ocrSpace = require('./services/ocr');
+        const useGemini = !!process.env.GEMINI_API_KEY;
+        const ocrService = useGemini ? ocrGemini : ocrSpace;
+
+        const ocrResult = await ocrService.processImage(imageBuffer);
+        const scoreboardOcr = require('./services/scoreboardOcr');
+        const parsed = scoreboardOcr.parseScoreboardText(ocrResult.rawText, {
+          discordUsername: message.author.username,
+          inputDamage: message.content.replace(/[^0-9]/g, '')
+        });
+
+        if (parsed.damage > 0) {
+          const storage = require('./services/storage');
+          const ext = imageAttachment.name?.split('.').pop() || 'png';
+          const targetPath = `records/${message.author.id}-${Date.now()}.${ext}`;
+          await storage.uploadFile(imageBuffer, targetPath, imageAttachment.contentType);
+          const permanentScreenshotUrl = storage.getPublicUrl(targetPath);
+
+          const battleRecords = require('./services/battleRecords');
+          const saveResult = await battleRecords.saveBattleRecord({
+            discordUserId: message.author.id,
+            discordUsername: message.author.username,
+            playerId: parsed.playerId,
+            playerName: parsed.playerName,
+            shipName: parsed.shipName,
+            shipClass: parsed.shipClass,
+            damage: parsed.damage,
+            kills: parsed.kills,
+            assists: parsed.assists,
+            mapName: parsed.mapName,
+            screenshotUrl: permanentScreenshotUrl,
+            extractedOcrText: ocrResult.rawText,
+            rawOcrData: parsed
+          });
+
+          // React with checkmark
+          await message.react('✅').catch(() => {});
+
+          if (saveResult.isNewClanRecord) {
+            await message.reply({
+              content: `🏆 **NEW CLAN RECORD!** <@${message.author.id}> has set the **#1 Damage Record** for **${parsed.shipName}** with **\`${parsed.damage.toLocaleString('en-US')}\`** damage!`
+            });
+
+            // Update class channel leaderboard if it exists in guild
+            try {
+              const targetChannel = message.guild.channels.cache.find(c => c.name.toLowerCase() === parsed.shipClass.toLowerCase());
+              if (targetChannel && targetChannel.isTextBased()) {
+                const boardEmbed = await battleRecords.generateClassLeaderboardEmbed(parsed.shipClass);
+                await targetChannel.send({ embeds: [boardEmbed] });
+              }
+            } catch (postErr) {
+              logger.warn('Index', 'Could not auto-post to class channel', { error: postErr.message });
+            }
+          }
+        }
+      } catch (err) {
+        logger.error('Index', 'Failed to auto-process submission in channel', { error: err.message });
+      }
+    }
   }
 
   if (!message.channel.name?.startsWith('open-ticket-')) return;

@@ -1,0 +1,51 @@
+[
+  {
+    "id": "\\.",
+    "user_id": null,
+    "role_id": null,
+    "assigned_by": null,
+    "assigned_at": null
+  },
+  {
+    "id": "--",
+    "user_id": null,
+    "role_id": null,
+    "assigned_by": null,
+    "assigned_at": null
+  },
+  {
+    "id": "-- Data for Name: team_members; Type: TABLE DATA; Schema: public; Owner: postgres",
+    "user_id": null,
+    "role_id": null,
+    "assigned_by": null,
+    "assigned_at": null
+  },
+  {
+    "id": "--",
+    "user_id": null,
+    "role_id": null,
+    "assigned_by": null,
+    "assigned_at": null
+  },
+  {
+    "id": "COPY public.team_members (id, team_id, player_id, role, joined_at) FROM stdin;",
+    "user_id": null,
+    "role_id": null,
+    "assigned_by": null,
+    "assigned_at": null
+  },
+  {
+    "id": "c4bd628a-8c93-43dd-bece-c07faab3580a",
+    "user_id": "8f1c9946-06a9-42bc-8cb5-e8222a7ccddb",
+    "role_id": "8B38C96F59232BD0",
+    "assigned_by": "CAPTAIN",
+    "assigned_at": "2026-07-30 09:02:26.116875+00"
+  },
+  {
+    "id": "ac68f0ab-700a-4e34-8cb4-6cc433b51d54",
+    "user_id": "8f1c9946-06a9-42bc-8cb5-e8222a7ccddb",
+    "role_id": "632272DB57D29332",
+    "assigned_by": "CAPTAIN",
+    "assigned_at": "2026-08-31 19:52:51.794407+00"
+  }
+]

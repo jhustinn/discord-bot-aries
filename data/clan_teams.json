@@ -1,0 +1,13 @@
+[
+  {
+    "team_id": "8f1c9946-06a9-42bc-8cb5-e8222a7ccddb",
+    "team_name": "Test",
+    "team_tier": "MAIN",
+    "description": "",
+    "max_members": "5",
+    "captain_player_id": null,
+    "is_active": true,
+    "created_at": "2026-07-30 08:27:45.373001+00",
+    "updated_at": "2026-07-30 08:27:45.373001+00"
+  }
+]

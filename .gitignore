@@ -1,2 +1,52 @@
+# Node.js Dependencies
 node_modules/
+package-lock.json.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Subproject dependencies
+mw-verification-admin/node_modules/
+mw-verification-admin/dist/
+mw-api/vendor/
+mw-api/public/hot
+mw-api/public/storage
+
+# Environment Variables & Secrets
 .env
+.env.backup
+.env.local
+.env.production
+mw-api/.env
+mw-api/.env.backup
+mw-api/.env.production
+mw-verification-admin/.env
+mw-verification-admin/.env.local
+mw-verification-admin/.env.production
+
+# Storage & Uploads
+uploads/*
+!uploads/.gitkeep
+data/temp/
+
+# Laravel Storage & Cache
+mw-api/storage/*.key
+mw-api/storage/logs/*.log
+mw-api/storage/framework/cache/data/*
+!mw-api/storage/framework/cache/data/.gitkeep
+mw-api/storage/framework/sessions/*
+!mw-api/storage/framework/sessions/.gitkeep
+mw-api/storage/framework/views/*
+!mw-api/storage/framework/views/.gitkeep
+mw-api/database/*.sqlite
+mw-api/database/*.sqlite-journal
+
+# IDEs & System files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+.fleet/
+.phpunit.result.cache
+.phpunit.cache

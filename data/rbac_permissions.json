@@ -1,0 +1,282 @@
+[
+  {
+    "permission_id": "893fb65e-bdad-4384-9c34-9a53fbd0efd4",
+    "permission_name": "View Dashboard",
+    "permission_slug": "dashboard.view",
+    "category": "Dashboard",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "d0980b8c-0dc4-4889-8ad9-dd94c62ce566",
+    "permission_name": "View Statistics",
+    "permission_slug": "dashboard.stats",
+    "category": "Dashboard",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "8925d563-5bde-400e-9916-d92b4fd45681",
+    "permission_name": "View Members",
+    "permission_slug": "members.view",
+    "category": "Members",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "1c4c6a04-3e42-45f2-8f87-430395fc4f2d",
+    "permission_name": "Manage Members",
+    "permission_slug": "members.manage",
+    "category": "Members",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "6beb3696-dcad-4008-ae11-16e254f3abc6",
+    "permission_name": "Kick Members",
+    "permission_slug": "members.kick",
+    "category": "Members",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "5e8fccb9-4ceb-4b1d-a81a-eb11bcf67f20",
+    "permission_name": "Ban Members",
+    "permission_slug": "members.ban",
+    "category": "Members",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "3a6aac7a-7af2-4ab9-af7c-5340e5f3ea37",
+    "permission_name": "Assign Roles",
+    "permission_slug": "members.assign_role",
+    "category": "Members",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "fe66aaa3-3b35-40e5-8304-7cfc09484413",
+    "permission_name": "View Players",
+    "permission_slug": "players.view",
+    "category": "Players",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "aaff3d22-b542-4e43-aa03-1784e515a4a8",
+    "permission_name": "Manage Players",
+    "permission_slug": "players.manage",
+    "category": "Players",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "02dc980a-2990-4405-ba6b-6dc2dfe3083a",
+    "permission_name": "Edit Player Info",
+    "permission_slug": "players.edit",
+    "category": "Players",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "62fc69c1-02d7-4d89-b3bb-d204872bb62c",
+    "permission_name": "View Teams",
+    "permission_slug": "teams.view",
+    "category": "Teams",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "a3894437-8dec-42d1-a06f-6ae46f51e28b",
+    "permission_name": "Manage Teams",
+    "permission_slug": "teams.manage",
+    "category": "Teams",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "2297064f-8121-44fa-b6eb-fb37d12058c7",
+    "permission_name": "Create Teams",
+    "permission_slug": "teams.create",
+    "category": "Teams",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "7ccaab77-c639-449b-bfbe-bccc8e0c0c62",
+    "permission_name": "Delete Teams",
+    "permission_slug": "teams.delete",
+    "category": "Teams",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "63f9373e-68fb-4483-88f2-e2c01698534a",
+    "permission_name": "View Wars",
+    "permission_slug": "wars.view",
+    "category": "Wars",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "b57052cd-d764-47e6-8566-e71fdb10497f",
+    "permission_name": "Create Wars",
+    "permission_slug": "wars.create",
+    "category": "Wars",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "d6fbf519-cbc8-4f13-934f-24ce3305f544",
+    "permission_name": "Manage Wars",
+    "permission_slug": "wars.manage",
+    "category": "Wars",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "76dbc833-a6a2-40b2-96c0-5c78bdfd95ec",
+    "permission_name": "Delete Wars",
+    "permission_slug": "wars.delete",
+    "category": "Wars",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "dc084ac2-c7ea-4229-82f7-d55afcb8a78f",
+    "permission_name": "View Points",
+    "permission_slug": "points.view",
+    "category": "Points",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "5c86db49-b9a2-45f8-8868-80411bf0021f",
+    "permission_name": "Award Points",
+    "permission_slug": "points.award",
+    "category": "Points",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "c5d512d2-3aab-46b8-86bc-caabbb4430ff",
+    "permission_name": "Deduct Points",
+    "permission_slug": "points.deduct",
+    "category": "Points",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "3a2d631d-bb08-43e6-9db1-afac29ba4d67",
+    "permission_name": "Manage Points",
+    "permission_slug": "points.manage",
+    "category": "Points",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "af85dd9c-8eb8-45bb-881e-15c8264a7355",
+    "permission_name": "View Seasons",
+    "permission_slug": "seasons.view",
+    "category": "Seasons",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "a52d7ad9-79a0-4b9b-b7c6-6e5fb3917e83",
+    "permission_name": "Create Seasons",
+    "permission_slug": "seasons.create",
+    "category": "Seasons",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "38a42a5b-e53e-4da7-97e3-0b8acd1c1b01",
+    "permission_name": "Manage Seasons",
+    "permission_slug": "seasons.manage",
+    "category": "Seasons",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "23eba26d-f86b-4c73-a305-09b00018afe3",
+    "permission_name": "View Roles",
+    "permission_slug": "roles.view",
+    "category": "Roles",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "93b48bfd-ba44-4fd0-93ed-e8b1097569a4",
+    "permission_name": "Manage Roles",
+    "permission_slug": "roles.manage",
+    "category": "Roles",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "10d21b04-16ab-4043-b864-62fb0e5cdfbd",
+    "permission_name": "Create Roles",
+    "permission_slug": "roles.create",
+    "category": "Roles",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "6a093f6a-e9c2-4a7e-9b94-b289c9eba28e",
+    "permission_name": "Delete Roles",
+    "permission_slug": "roles.delete",
+    "category": "Roles",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "f373d0f5-92c1-41cd-b6f5-3b874b7bf205",
+    "permission_name": "View Channels",
+    "permission_slug": "channels.view",
+    "category": "Channels",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "8c227f04-594a-4651-aa37-7f2bcda19e72",
+    "permission_name": "Manage Channels",
+    "permission_slug": "channels.manage",
+    "category": "Channels",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "9f3a3a0b-6e03-4a0d-99d0-2d6de6ffb7b2",
+    "permission_name": "View Audit Logs",
+    "permission_slug": "audit.view",
+    "category": "Audit",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "4fd2caa0-5ddd-4368-84f1-aef5291ee370",
+    "permission_name": "Export Audit Logs",
+    "permission_slug": "audit.export",
+    "category": "Audit",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "0d13164d-8cb0-4d26-be90-0a850515295e",
+    "permission_name": "View Settings",
+    "permission_slug": "settings.view",
+    "category": "Settings",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "permission_id": "2b663562-416e-4300-a336-0d0ec4ac6811",
+    "permission_name": "Manage Settings",
+    "permission_slug": "settings.manage",
+    "category": "Settings",
+    "description": null,
+    "created_at": "2026-07-30 07:45:05.192778+00"
+  }
+]

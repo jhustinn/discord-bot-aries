@@ -135,6 +135,99 @@ function parseText(text) {
     }
   }
 
+  // ─── Rank & Points Extraction ─────────────────────────────────────────────
+  let currentRank = null;
+  let bestRank = null;
+  let seasonNumber = null;
+  let rankPoints = null;
+  let clanPoints = null;
+  let playerTitle = null;
+
+  // Single string search across full text for complex patterns
+  const fullText = text.replace(/\s+/g, ' ');
+
+  // 1. Season Number: e.g. (SEASON 14) or SEASON 14
+  const seasonMatch = fullText.match(/(?:SEASON|Season)\s*(\d+)/i);
+  if (seasonMatch) {
+    seasonNumber = parseInt(seasonMatch[1]);
+    logger.info('OCR', 'Found Season:', { seasonNumber });
+  }
+
+  // 2. Title: e.g. Title Unsinkable Achievements
+  const titleMatch = fullText.match(/Title\s+([A-Za-z0-9\s]+?)\s+(?:Achievements|Player|Showcase)/i);
+  if (titleMatch) {
+    playerTitle = titleMatch[1].trim();
+    logger.info('OCR', 'Found Title:', { playerTitle });
+  }
+
+  // 3. Received Points / Clan Points: e.g. Received Points 1839
+  const receivedPointsMatch = fullText.match(/Received\s*Points\s*(\d+)/i);
+  if (receivedPointsMatch) {
+    rankPoints = parseInt(receivedPointsMatch[1]);
+    logger.info('OCR', 'Found Received Points:', { rankPoints });
+  }
+
+  // 4. Clan Progress Points: e.g. ARIES 1266 / 1400
+  const clanPointsMatch = fullText.match(/(\d{2,6})\s*\/\s*\d{2,6}/);
+  if (clanPointsMatch) {
+    clanPoints = parseInt(clanPointsMatch[1]);
+    logger.info('OCR', 'Found Clan Progress Points:', { clanPoints });
+  }
+
+  // 5. Current Rank & Best Rank
+  // Modern Warships competitive ranks: Bronze 1-3, Silver 1-3, Gold 1-3, Platinum 1-3, Diamond 1-3, Hero, Legendary
+  const validRankRegex = /\b(Bronze|Silver|Gold|Platinum|Diamond|Hero|Legendary)\s*([1-3]|I|II|III)?\b/gi;
+
+  // Method 1: Table-based column search (when Current rank and Best rank are in the header)
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/Current\s*rank/i.test(line) && /Best\s*rank/i.test(line)) {
+      const nextLine = lines[i + 1] || '';
+      const matches = [...nextLine.matchAll(validRankRegex)].map(m => m[0].trim());
+      if (matches.length >= 2) {
+        currentRank = matches[0];
+        bestRank = matches[1];
+        logger.info('OCR', 'Found Ranks (table column layout):', { currentRank, bestRank });
+        break;
+      }
+    }
+  }
+
+  // Method 2: Keyword-targeted search
+  if (!currentRank || !bestRank) {
+    // Look specifically for Best rank ... [Rank]
+    const bestRankMatch = fullText.match(/Best\s*rank(?:\s*\([^)]*\))?[^A-Za-z0-9]*([A-Za-z]+\s*[1-3]?)/i);
+    if (bestRankMatch) {
+      const m = bestRankMatch[1].match(validRankRegex);
+      if (m) {
+        bestRank = m[0].trim();
+        logger.info('OCR', 'Found Best Rank (keyword):', { bestRank });
+      }
+    }
+
+    // Look specifically for Current rank ... [Rank]
+    const currentRankMatch = fullText.match(/Current\s*rank[^A-Za-z0-9]*([A-Za-z]+\s*[1-3]?)/i);
+    if (currentRankMatch) {
+      const m = currentRankMatch[1].match(validRankRegex);
+      if (m) {
+        currentRank = m[0].trim();
+        logger.info('OCR', 'Found Current Rank (keyword):', { currentRank });
+      }
+    }
+
+    // Fallback: Dual matches strictly after "Current rank"
+    if (!currentRank || !bestRank) {
+      const afterCurrentRank = fullText.split(/Current\s*rank/i)[1] || '';
+      const matches = [...afterCurrentRank.matchAll(validRankRegex)].map(m => m[0].trim());
+      if (matches.length >= 2) {
+        if (!currentRank) currentRank = matches[0];
+        if (!bestRank) bestRank = matches[1];
+      } else if (matches.length === 1 && !currentRank) {
+        currentRank = matches[0];
+      }
+    }
+  }
+
   // Fallback: Try to find name from lines that look like player names
   if (!playerName) {
     for (const line of lines) {
@@ -159,7 +252,13 @@ function parseText(text) {
     playerId,
     playerName,
     playerLevel,
-    confidence: playerId ? 'high' : playerName ? 'medium' : 'low'
+    currentRank: currentRank || 'Unranked',
+    bestRank: bestRank || currentRank || 'Unranked',
+    seasonNumber: seasonNumber || null,
+    rankPoints: rankPoints || clanPoints || 0,
+    clanPoints: clanPoints || 0,
+    playerTitle: playerTitle || null,
+    confidence: (playerId && currentRank) ? 'high' : playerId ? 'medium' : 'low'
   };
 
   logger.info('OCR', 'Final parsed result:', result);

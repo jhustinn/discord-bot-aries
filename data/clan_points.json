@@ -1,0 +1,62 @@
+[
+  {
+    "id": "\\.",
+    "player_id": null,
+    "season_id": null,
+    "total_points": null,
+    "lifetime_points": null,
+    "lifetime_spent": null,
+    "rank": null,
+    "rank_updated_at": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "--",
+    "player_id": null,
+    "season_id": null,
+    "total_points": null,
+    "lifetime_points": null,
+    "lifetime_spent": null,
+    "rank": null,
+    "rank_updated_at": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "-- Data for Name: clan_points_history; Type: TABLE DATA; Schema: public; Owner: postgres",
+    "player_id": null,
+    "season_id": null,
+    "total_points": null,
+    "lifetime_points": null,
+    "lifetime_spent": null,
+    "rank": null,
+    "rank_updated_at": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "--",
+    "player_id": null,
+    "season_id": null,
+    "total_points": null,
+    "lifetime_points": null,
+    "lifetime_spent": null,
+    "rank": null,
+    "rank_updated_at": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "COPY public.clan_points_history (id, player_id, season_id, points_change, reason, category, admin_id, admin_username, bot_source, reference_id, reference_type, created_at) FROM stdin;",
+    "player_id": null,
+    "season_id": null,
+    "total_points": null,
+    "lifetime_points": null,
+    "lifetime_spent": null,
+    "rank": null,
+    "rank_updated_at": null,
+    "created_at": null,
+    "updated_at": null
+  }
+]

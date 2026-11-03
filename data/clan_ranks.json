@@ -1,0 +1,79 @@
+[
+  {
+    "id": "f8022f33-1720-42b6-b167-39344b81881e",
+    "rank_name": "Newcomer",
+    "min_points": "0",
+    "emoji": "🆕",
+    "color": "#9CA3AF",
+    "role_id": null,
+    "permissions": null,
+    "created_at": "2026-07-30 07:45:05.192778+00",
+    "updated_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "id": "ec431991-882e-4c1c-8ac2-37fbc087e229",
+    "rank_name": "Member",
+    "min_points": "100",
+    "emoji": "👤",
+    "color": "#3B82F6",
+    "role_id": null,
+    "permissions": null,
+    "created_at": "2026-07-30 07:45:05.192778+00",
+    "updated_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "id": "f116cc66-a3fd-4e86-9825-06fb0e1c0a3e",
+    "rank_name": "Veteran",
+    "min_points": "500",
+    "emoji": "⭐",
+    "color": "#F59E0B",
+    "role_id": null,
+    "permissions": null,
+    "created_at": "2026-07-30 07:45:05.192778+00",
+    "updated_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "id": "886e6b43-745b-41f5-a1a7-dbaf1e3454bc",
+    "rank_name": "Elite",
+    "min_points": "1000",
+    "emoji": "💎",
+    "color": "#8B5CF6",
+    "role_id": null,
+    "permissions": null,
+    "created_at": "2026-07-30 07:45:05.192778+00",
+    "updated_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "id": "af1ea61a-5375-47f3-92bb-4c951de26c52",
+    "rank_name": "Champion",
+    "min_points": "2500",
+    "emoji": "🏆",
+    "color": "#EF4444",
+    "role_id": null,
+    "permissions": null,
+    "created_at": "2026-07-30 07:45:05.192778+00",
+    "updated_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "id": "354587ca-6a9e-465f-90ef-c299aa328a19",
+    "rank_name": "Legend",
+    "min_points": "5000",
+    "emoji": "👑",
+    "color": "#F59E0B",
+    "role_id": null,
+    "permissions": null,
+    "created_at": "2026-07-30 07:45:05.192778+00",
+    "updated_at": "2026-07-30 07:45:05.192778+00"
+  },
+  {
+    "id": "0a4a5480-31a5-4385-b1e5-87934b9bb997",
+    "rank_name": "Master",
+    "min_points": "10000",
+    "emoji": "🔥",
+    "color": "#DC2626",
+    "role_id": null,
+    "permissions": null,
+    "created_at": "2026-07-30 07:45:05.192778+00",
+    "updated_at": "2026-07-30 07:45:05.192778+00"
+  }
+]

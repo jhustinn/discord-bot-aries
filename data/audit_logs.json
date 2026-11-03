@@ -1,0 +1,32 @@
+[
+  {
+    "id": "33aa1eb3-7444-4951-aee1-844acd4aabd6",
+    "action": "RANK_SUBMISSION",
+    "action_category": "SEASONS",
+    "user_id": "1023370561507840052",
+    "username": "jhustynnn",
+    "target_id": "8B38C96F59232BD0",
+    "target_type": "player",
+    "target_name": "LEGACY",
+    "details": "{\"best_rank\": \"Platinum 1\", \"player_id\": \"8B38C96F59232BD0\", \"updated_at\": \"2026-08-31T20:10:04.358Z\", \"clan_points\": 1400, \"player_name\": \"LEGACY\", \"rank_points\": 2150, \"season_name\": \"Season 14\", \"current_rank\": \"Platinum 1\", \"player_level\": 49, \"raw_ocr_data\": {\"bestRank\": \"Platinum 1\", \"playerId\": \"8B38C96F59232BD0\", \"clanPoints\": 1400, \"playerName\": \"LEGACY\", \"rankPoints\": 2150, \"currentRank\": \"Platinum 1\", \"playerLevel\": 49, \"seasonNumber\": 14}, \"submitted_at\": \"2026-08-31T20:09:02.597Z\", \"season_number\": 14, \"extracted_text\": \"Updated screenshot\", \"discord_user_id\": \"1023370561507840052\", \"permanent_image_url\": \"https://kqpipzaqpcktuwuxfgno.supabase.co/storage/v1/object/public/verification-attachments/1023370561507840052-1787556409609.png\"}",
+    "old_value": null,
+    "new_value": null,
+    "status": "success",
+    "created_at": "2026-08-31 20:09:05.669992+00"
+  },
+  {
+    "id": "c487b069-06b8-469f-b3f8-cfba0a6fda42",
+    "action": "RANK_SUBMISSION",
+    "action_category": "SEASONS",
+    "user_id": "1023370561507840052",
+    "username": "jhustynnn",
+    "target_id": "7470EEC68BCD5C8A",
+    "target_type": "player",
+    "target_name": "Gyan",
+    "details": "{\"best_rank\": \"Gold 1\", \"player_id\": \"7470EEC68BCD5C8A\", \"updated_at\": \"2026-08-31T20:23:01.913Z\", \"clan_points\": 135114, \"player_name\": \"Gyan\", \"rank_points\": 1204, \"season_name\": \"Season 19\", \"current_rank\": \"Bronze 3\", \"player_level\": 35, \"raw_ocr_data\": {\"bestRank\": \"Gold 1\", \"playerId\": \"7470EEC68BCD5C8A\", \"clanPoints\": 135114, \"confidence\": \"high\", \"playerName\": \"Gyan\", \"rankPoints\": 1204, \"currentRank\": \"Bronze 3\", \"playerLevel\": 35, \"playerTitle\": \"Valiant Defender\", \"seasonNumber\": 16}, \"submitted_at\": \"2026-08-31T20:12:57.534Z\", \"season_number\": 19, \"extracted_text\": \"Back\\\\tPLAYER STATISTICS // STATISTICS\\\\t2,286 +\\\\t* 7,069,226 +\\\\t\\\\r\\\\n216\\\\t\\\\r\\\\n[ARIES] Gyan anand\\\\t\\\\r\\\\nTitle Valiant Defender\\\\t\\\\r\\\\nAchievements\\\\t\\\\r\\\\nPlayer ID 7470EEC68BCD5C8A\\\\tShowcase\\\\t\\\\r\\\\n35 Level\\\\t56135114 / 56500000\\\\t\\\\r\\\\nMASTER COMMAND SERGEANT\\\\tNAVAL ACADEMY\\\\t\\\\r\\\\nCurrent rank\\\\tBest rank (SEASON 16)\\\\t\\\\r\\\\nCLAN\\\\t\\\\r\\\\nBronze 3\\\\tGold 1\\\\t\\\\r\\\\nARIES\\\\t\\\\r\\\\n442\\\\t\\\\r\\\\n565 / 600\\\\tReceived Points\\\\t\\\\r\\\\n1204\\\\t\\\\r\\\\n\", \"discord_user_id\": \"1023370561507840052\", \"permanent_image_url\": \"https://kqpipzaqpcktuwuxfgno.supabase.co/storage/v1/object/public/verification-attachments/ranks/1023370561507840052-season-19-1788207780686.png\"}",
+    "old_value": null,
+    "new_value": null,
+    "status": "success",
+    "created_at": "2026-08-31 20:13:00.595775+00"
+  }
+]

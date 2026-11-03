@@ -1,0 +1,68 @@
+[
+  {
+    "id": "\\.",
+    "role_id": null,
+    "permission_id": null,
+    "created_at": null
+  },
+  {
+    "id": "--",
+    "role_id": null,
+    "permission_id": null,
+    "created_at": null
+  },
+  {
+    "id": "-- Data for Name: rbac_roles; Type: TABLE DATA; Schema: public; Owner: postgres",
+    "role_id": null,
+    "permission_id": null,
+    "created_at": null
+  },
+  {
+    "id": "--",
+    "role_id": null,
+    "permission_id": null,
+    "created_at": null
+  },
+  {
+    "id": "COPY public.rbac_roles (role_id, role_name, role_slug, description, is_system, is_active, created_at, updated_at) FROM stdin;",
+    "role_id": null,
+    "permission_id": null,
+    "created_at": null
+  },
+  {
+    "id": "ce01082a-2901-4c5e-93cf-653d88b89d74",
+    "role_id": "Super Admin",
+    "permission_id": "super_admin",
+    "created_at": "Full system access"
+  },
+  {
+    "id": "715d1849-7635-40ad-a730-24edeecfc02f",
+    "role_id": "Admin",
+    "permission_id": "admin",
+    "created_at": "Administrative access"
+  },
+  {
+    "id": "1dfab615-8099-4d54-84d8-852301863e1f",
+    "role_id": "Leader",
+    "permission_id": "leader",
+    "created_at": "Clan leader with war management"
+  },
+  {
+    "id": "561c1376-9edd-4796-8435-5ed62cda50e8",
+    "role_id": "Moderator",
+    "permission_id": "moderator",
+    "created_at": "Moderation access"
+  },
+  {
+    "id": "73af4bbf-1408-443d-bd74-b5b283b111ea",
+    "role_id": "Member",
+    "permission_id": "member",
+    "created_at": "Basic member access"
+  },
+  {
+    "id": "e13072fa-b0c6-49d8-8873-7182ceeae36a",
+    "role_id": "Viewer",
+    "permission_id": "viewer",
+    "created_at": "Read-only access"
+  }
+]

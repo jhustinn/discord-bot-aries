@@ -1,0 +1,57 @@
+[
+  {
+    "id": "\\.",
+    "player_id": null,
+    "day_of_week": null,
+    "start_time": null,
+    "end_time": null,
+    "is_available": null,
+    "notes": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "--",
+    "player_id": null,
+    "day_of_week": null,
+    "start_time": null,
+    "end_time": null,
+    "is_available": null,
+    "notes": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "-- Data for Name: rank_season; Type: TABLE DATA; Schema: public; Owner: postgres",
+    "player_id": null,
+    "day_of_week": null,
+    "start_time": null,
+    "end_time": null,
+    "is_available": null,
+    "notes": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "--",
+    "player_id": null,
+    "day_of_week": null,
+    "start_time": null,
+    "end_time": null,
+    "is_available": null,
+    "notes": null,
+    "created_at": null,
+    "updated_at": null
+  },
+  {
+    "id": "COPY public.rank_season (id, season_id, player_id, rank_name, rank_tier, rank_points, total_wars, wins, losses, draws, total_points_earned, total_points_spent, contribution_score, recorded_at, created_at, updated_at) FROM stdin;",
+    "player_id": null,
+    "day_of_week": null,
+    "start_time": null,
+    "end_time": null,
+    "is_available": null,
+    "notes": null,
+    "created_at": null,
+    "updated_at": null
+  }
+]
