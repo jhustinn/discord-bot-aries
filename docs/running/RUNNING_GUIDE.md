@@ -1,60 +1,61 @@
 # 🚀 Running the Platform
 
-This guide explains how to start, execute, and monitor the three components of the platform: the Discord Bot, the Laravel API backend, and the React Admin Dashboard.
+This guide explains how to start, execute, and monitor the services. You can choose between **Architecture 1: Full Laravel Monolith** (100% PHP, zero Node.js backend) or **Architecture 2: Hybrid Stack** (Node.js Bot + Laravel API + React Admin).
 
 ---
 
-## 🏃 Running in Development Mode
+## 🌟 Option 1: Full Laravel Monolith (Recommended)
 
-In development mode, you can run each service in a separate terminal window to inspect live logs, hot reload code, and debug API calls.
+In this mode, the Discord Bot runs directly inside Laravel via `team-reflex/discord-php`, with direct access to Eloquent models, migrations, and database records.
 
-### Terminal 1: Discord Bot Engine
-Runs on `http://localhost:3000`
-
-```bash
-# In project root:
-npm start
-# or for auto-restart on file edits:
-npm run dev
-```
-
-Expected startup logs:
-```
-[INFO] [Bot] Logged in as Aries Bot#1234
-[INFO] [Bot] Registering slash commands for guild 1023370561507840052...
-[INFO] [Bot] Slash commands successfully registered.
-[INFO] [HTTP] Internal API server listening on port 3000
-```
-
----
-
-### Terminal 2: Laravel Backend API
-Runs on `http://localhost:8000`
+### Terminal 1: Native Laravel Discord Bot
+Runs as a background event-driven daemon:
 
 ```bash
 cd mw-api
-
-# Start with multi-worker support for concurrent API handling:
-php artisan serve --port=8000 --no-reload
+php artisan discord:run
 ```
-> [!TIP]
-> Setting `$env:PHP_CLI_SERVER_WORKERS=4` (PowerShell) or `PHP_CLI_SERVER_WORKERS=4` (Linux) enables PHP's built-in multi-threaded server so concurrent requests from the frontend and Discord bot do not block each other.
+
+Expected output:
+```
+======================================================
+🚀 DISCORD BOT SUCCESSFULLY CONNECTED VIA LARAVEL!
+🤖 Logged in as: TestBotVerificatiom#9217 (ID: 1528949636746706945)
+🏰 Guilds connected: 1
+   - Place For Us (ID: 1230512877606277130, Members: 2)
+
+📊 DIRECT LARAVEL ELOQUENT ACCESS TEST:
+   - Total Verification Tickets in DB: 29
+   - Total Verified Players in DB: 2
+   - Total RBAC Roles in DB: 10
+======================================================
+📡 Bot is listening for events (Type !ping in any server channel to test)...
+```
 
 ---
 
-### Terminal 3: React Admin Dashboard (Vite Dev Server)
-Runs on `http://localhost:5173`
+### Terminal 2: Laravel Backend API & Web Server
+Serves the REST API and the compiled React Admin Dashboard:
+
+```bash
+cd mw-api
+php artisan serve --port=8000 --no-reload
+```
+
+---
+
+### Terminal 3: React Admin Dashboard (Development Only)
+If actively developing the frontend with hot-module replacement (Vite):
 
 ```bash
 cd mw-verification-admin
 npm run dev
+# Accessible at http://localhost:5173
 ```
-
-The admin dashboard will be accessible at [http://localhost:5173](http://localhost:5173).
 
 ---
 
-## 🏭 Running in Production Mode (Unified Single-Port Deployment)
+## 🏭 Production Single-Port Deployment
 
 In production, you can build the React dashboard into static assets and let Laravel serve both the REST API and the Admin Web Interface on a single port (`8000` or standard `80`/`443`).
 
@@ -63,43 +64,49 @@ In production, you can build the React dashboard into static assets and let Lara
 cd mw-verification-admin
 npm run build
 ```
-This automatically compiles assets into `../mw-api/public/` (Vite output dir).
+This automatically compiles assets into `../mw-api/public/assets` and `../mw-api/public/index.html`.
 
 ### 2. Serve from Laravel:
 Now, navigating to `http://localhost:8000/` or `http://your-server-ip/` directly displays the React Admin Dashboard, with all `/api/*` endpoints resolving to Laravel controllers!
 
 ---
 
+## 🌿 Option 2: Hybrid Stack (Node.js Bot Engine)
+
+If you prefer using the Node.js implementation:
+
+* **Terminal 1 (Node.js Bot)**:
+  ```bash
+  npm start
+  # Bot runs on port 3000
+  ```
+* **Terminal 2 (Laravel API)**:
+  ```bash
+  cd mw-api
+  php artisan serve --port=8000 --no-reload
+  ```
+* **Terminal 3 (Admin Panel)**:
+  ```bash
+  cd mw-verification-admin
+  npm run dev
+  ```
+
+---
+
 ## 🎯 Verifying Service Status
 
-You can test that all endpoints are operational with quick HTTP requests:
+1. **Test Bot Responsiveness**:
+   Type `!ping` in any channel on your Discord server. The bot will respond with:
+   > 🏓 **Pong from Laravel 12 & PHP 8.2!**  
+   > ⚡ Bot berjalan 100% murni di dalam Laravel.  
+   > 📊 **Live Eloquent DB Data:**  
+   > • Verified Players: **2**  
+   > • Total Tickets: **29**
 
-1. **Check Discord Bot API**:
-   ```bash
-   curl http://localhost:3000/health
-   # Returns: {"status":"healthy","bot":"online","uptime":...}
-   ```
-
-2. **Check Laravel API**:
+2. **Check Laravel REST API**:
    ```bash
    curl http://localhost:8000/api/tickets
    ```
 
-3. **Check Discord Role Synchronization**:
-   ```bash
-   curl -H "x-api-key: aries-admin-2024" http://localhost:3000/api/discord/roles
-   ```
-
----
-
-## 🎮 Initial Discord Server Initialization
-
-Once the bot is online in your Discord server:
-
-1. Go to your verification channel (`WELCOME_CHANNEL_ID`).
-2. Run the slash command:
-   ```
-   /verify-panel
-   ```
-3. An embed message with the **"Verifikasi Akun"** button will be dispatched.
-4. When a user clicks the button, a private ticket channel `open-ticket-XX-<username>` is instantly created with instructions to submit their Modern Warships profile screenshot!
+3. **Check Admin Dashboard**:
+   Open [http://localhost:8000](http://localhost:8000) or [http://localhost:5173](http://localhost:5173) in your browser.

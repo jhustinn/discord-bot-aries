@@ -13,44 +13,9 @@ cd discord-bot-aries
 
 ---
 
-## 2. Setup Discord Bot Engine (Root Directory)
+## 2. Setup Backend API & Native Laravel Bot (`mw-api`)
 
-The Discord bot engine manages verification tickets, OCR processing, clan war tracking, and the internal REST API.
-
-```bash
-# In the root repository directory:
-npm install
-```
-
-### Configure Environment Variables
-Copy `.env.example` to `.env`:
-
-```bash
-# Windows (PowerShell)
-Copy-Item .env.example .env
-
-# Linux / macOS
-cp .env.example .env
-```
-
-Open `.env` and fill in your Discord credentials and Gemini OCR API Key:
-```env
-DISCORD_TOKEN=your_bot_token_here
-GUILD_ID=your_discord_guild_id_here
-WELCOME_CHANNEL_ID=your_verification_channel_id_here
-TICKET_CATEGORY_ID=your_ticket_category_id_here
-VERIFIED_ROLE_ID=your_verified_role_id_here
-GEMINI_API_KEY=your_gemini_api_key_here
-API_SECRET_KEY=aries-admin-2024
-PORT=3000
-```
-*(For detailed descriptions of all variables, refer to [ENVIRONMENT_VARIABLES.md](ENVIRONMENT_VARIABLES.md).)*
-
----
-
-## 3. Setup Backend API (`mw-api`)
-
-The backend API is powered by Laravel 11 and manages persistence, RBAC roles, seasons, ships, and REST routes.
+The backend API and native Discord bot engine run on **Laravel 12.71.0** with **PHP 8.2+**.
 
 ```bash
 cd mw-api
@@ -61,7 +26,6 @@ composer install
 Copy `.env.example` to `.env`:
 
 ```bash
-# Inside mw-api directory:
 # Windows (PowerShell)
 Copy-Item .env.example .env
 
@@ -74,8 +38,26 @@ Generate Laravel application encryption key:
 php artisan key:generate
 ```
 
+Open `.env` in `mw-api/` and configure your credentials:
+```env
+APP_NAME="Modern Warships Bot Admin API"
+APP_ENV=local
+APP_KEY=base64:...
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=sqlite
+
+# Discord Bot Credentials
+DISCORD_TOKEN=your_bot_token_here
+GUILD_ID=your_guild_id_here
+WELCOME_CHANNEL_ID=your_welcome_channel_id_here
+TICKET_CATEGORY_ID=your_ticket_category_id_here
+VERIFIED_ROLE_ID=your_verified_role_id_here
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
 ### Initialize Database
-By default, the backend uses SQLite for rapid, zero-setup development.
+By default, the backend uses SQLite for rapid, zero-setup development:
 
 1. Ensure the SQLite database file exists:
    ```bash
@@ -92,9 +74,15 @@ By default, the backend uses SQLite for rapid, zero-setup development.
    ```
    *This seeds default administrative users, RBAC permissions, default ships catalog, and sample records.*
 
+### Test Native Discord Bot Connection:
+```bash
+php artisan discord:run --test
+```
+*This performs a self-test: authenticates with Discord Gateway v10, checks guild availability, queries Eloquent models, and cleanly disconnects.*
+
 ---
 
-## 4. Setup React Admin Dashboard (`mw-verification-admin`)
+## 3. Setup React Admin Dashboard (`mw-verification-admin`)
 
 The admin dashboard allows managing members, verification tickets, roles, wars, and transcripts in a modern web UI.
 
@@ -107,7 +95,6 @@ npm install
 Copy `.env.example` to `.env`:
 
 ```bash
-# Inside mw-verification-admin directory:
 # Windows (PowerShell)
 Copy-Item .env.example .env
 
@@ -131,6 +118,19 @@ npm run build
 
 ---
 
+## 4. (Optional) Setup Node.js Bot Engine (Root Directory)
+
+If you prefer to run the Node.js implementation of the bot (`discord.js v14`):
+
+```bash
+# In the root repository directory:
+npm install
+cp .env.example .env
+```
+Fill in `.env` at the root with your Discord Bot Token and keys.
+
+---
+
 ## ✅ Installation Complete!
 
-You are now ready to run the application. Head over to the [Running Guide](../running/RUNNING_GUIDE.md) to start all services.
+You are now ready to run the application. Head over to the [Running Guide](../running/RUNNING_GUIDE.md) to start the services.

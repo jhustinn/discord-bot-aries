@@ -6,7 +6,7 @@ For 24/7 high-availability deployment on a VPS (Linux/Ubuntu or Windows Server),
 
 ## 🚀 Option 1: Process Management with PM2 (Recommended)
 
-PM2 is a production process manager for Node.js and cross-platform runtimes.
+PM2 can manage both the Laravel API and the Native Laravel Bot daemon.
 
 ### 1. Install PM2 Globally
 ```bash
@@ -14,21 +14,23 @@ npm install -g pm2
 ```
 
 ### 2. Ecosystem Configuration File
-An `ecosystem.config.js` can be placed at the project root to orchestrate both the Node.js Bot and the Laravel API:
+Create or update `ecosystem.config.js` at the project root:
 
 ```javascript
 module.exports = {
   apps: [
     {
-      name: 'aries-discord-bot',
-      script: 'src/index.js',
-      cwd: './',
+      name: 'aries-discord-bot-laravel',
+      script: 'artisan',
+      interpreter: 'php',
+      args: 'discord:run',
+      cwd: './mw-api',
       instances: 1,
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
       env: {
-        NODE_ENV: 'production'
+        APP_ENV: 'production'
       }
     },
     {
@@ -41,6 +43,7 @@ module.exports = {
       autorestart: true,
       watch: false,
       env: {
+        APP_ENV: 'production',
         PHP_CLI_SERVER_WORKERS: '4'
       }
     }
@@ -71,17 +74,17 @@ For dedicated Linux deployments using Nginx and PHP-FPM:
 ### 1. Bot Service (`/etc/systemd/system/aries-bot.service`):
 ```ini
 [Unit]
-Description=Aries Modern Warships Discord Bot
+Description=Aries Modern Warships Discord Bot (Laravel Daemon)
 After=network.target
 
 [Service]
 Type=simple
-User=ubuntu
-WorkingDirectory=/var/www/discord-bot-aries
-ExecStart=/usr/bin/node src/index.js
+User=www-data
+WorkingDirectory=/var/www/discord-bot-aries/mw-api
+ExecStart=/usr/bin/php artisan discord:run
 Restart=always
 RestartSec=5
-Environment=NODE_ENV=production
+Environment=APP_ENV=production
 
 [Install]
 WantedBy=multi-user.target
@@ -97,4 +100,4 @@ sudo systemctl status aries-bot
 
 ### 2. Serving Laravel via Nginx & PHP-FPM:
 Point your Nginx `root` directive to `/var/www/discord-bot-aries/mw-api/public`, and configure PHP 8.2+ FastCGI pass.
-All requests to `/` will serve the React Admin Dashboard, and `/api/*` will route to Laravel!
+All requests to `/` will serve the compiled React Admin Dashboard, and `/api/*` will route to Laravel!

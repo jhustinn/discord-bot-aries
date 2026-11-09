@@ -4,9 +4,9 @@
 
 ### Automated Verification, Gemini Vision OCR, Unified Discord-Web RBAC & Clan Operations Platform
 
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B%20%7C%2020%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![Discord.js](https://img.shields.io/badge/Discord.js-v14.14-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.js.org/)
-[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com/)
+[![Laravel](https://img.shields.io/badge/Laravel-12.71.0-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com/)
+[![PHP](https://img.shields.io/badge/PHP-8.2%20%7C%208.3-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+[![DiscordPHP](https://img.shields.io/badge/DiscordPHP-v10.45-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://github.com/discord-php/DiscordPHP)
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-1.5_Flash_Vision-8E75C4?style=for-the-badge&logo=googlegemini&logoColor=white)](https://aistudio.google.com/)
@@ -21,15 +21,17 @@
 
 **Aries Modern Warships Management Ecosystem** is an enterprise-grade platform specifically designed for Modern Warships competitive gaming clans and Discord gaming communities. 
 
-It provides an end-to-end automated pipeline:
-1. **Discord Bot Engine**: Automated verification ticketing, in-game screenshot processing via **Google Gemini 1.5 Flash Vision OCR**, post-match scoreboard extraction, war rosters, and transcript archiving.
-2. **Backend API (Laravel 11)**: RESTful controllers, multi-driver database support (SQLite, MySQL, PostgreSQL/Supabase), Sanctum authentication, ship catalogs, and Discord REST synchronization.
-3. **Admin Dashboard (React 18 + Vite + Tailwind CSS)**: Web administration dashboard featuring unified 1:1 Discord-to-Web RBAC, ticket review workflow, player management, battle record inspection, and dark mode.
+The platform supports a flexible **Dual-Engine Architecture**:
+1. **Native Laravel Bot Daemon (`php artisan discord:run`)**: Runs 100% inside **Laravel 12.71.0** using `team-reflex/discord-php`. Direct native access to Laravel Eloquent models (`VerificationTicket`, `VerifiedPlayer`, `RbacRole`) without separate Node.js processes or network overhead.
+2. **Node.js Bot Engine (`src/`)**: Alternative Node.js 18+/20+ engine powered by `discord.js v14`.
+3. **Backend REST API (`mw-api/`)**: Laravel 12.71.0 RESTful controllers, multi-driver database support (SQLite, MySQL, PostgreSQL/Supabase), Sanctum authentication, and RBAC role synchronization.
+4. **Admin Dashboard (`mw-verification-admin/`)**: React 18 SPA built with Vite and Tailwind CSS. Features unified 1:1 Discord-to-Web RBAC, ticket review workflow, player management, battle record inspection, and dark mode.
 
 ---
 
 ## 🚀 Key Capabilities
 
+* 🤖 **Native Laravel Bot Engine**: Run your Discord bot directly from Laravel using `php artisan discord:run`. Zero external bridges needed.
 * 🎫 **Automated Verification Tickets**: Members click a button in `#welcome` to generate private `open-ticket-XX` channels with automatic numbering and permission isolation.
 * 👁️ **Multi-Modal OCR Vision**: Uses Google Gemini 1.5 Flash Vision to extract player IGNs (preserving Unicode symbols like `Ψ`, `Ω`, `⚡`), Account IDs, and Player Levels, with fallback to Google Cloud Vision and OCR.space.
 * 🛡️ **Unified 1:1 RBAC (Discord Role = Web Role)**: Discord roles directly map to web permissions. Assigning multiple roles on the web automatically synchronizes them to the member in Discord in real-time.
@@ -50,35 +52,24 @@ flowchart TD
         Server["Guild Roles & Members"]
     end
 
-    subgraph BotService["Bot Engine (Node.js :3000)"]
-        Cmd["Slash Commands & Buttons"]
-        OCR["Gemini 1.5 Flash Vision OCR"]
-        BBridge["Internal Bot REST API (/api/discord/*)"]
+    subgraph LaravelApp["Laravel 12.71.0 Application (mw-api)"]
+        BotDaemon["Native Bot Daemon (php artisan discord:run)"]
+        Eloquent["Eloquent ORM Models (Ticket, Player, Role, Ship)"]
+        REST["REST API Controllers (:8000)"]
+        DB[(Database: SQLite / MySQL / PostgreSQL)]
     end
 
-    subgraph LaravelAPI["Backend API (Laravel 11 :8000)"]
-        Rbac["RBAC & Role Sync Engine"]
-        Tickets["Verification Controller"]
-        Wars["Battle Records & Clan Wars"]
-        DB[(Database: SQLite / MySQL / Supabase)]
-    end
-
-    subgraph AdminPanel["Web Admin Dashboard (React 18)"]
+    subgraph AdminDashboard["Admin Frontend (React 18)"]
         UI["Tailwind CSS Admin UI"]
         Selector["CustomSelect Multi-Role"]
         Matrix["Permissions Matrix"]
     end
 
-    Member -->|Opens Verification| Channel
-    Channel -->|Uploads Screenshot| Cmd
-    Cmd -->|Analyzes Image| OCR
-    OCR -->|Extracted Player Data| Cmd
-    Cmd -->|Stores Record| LaravelAPI
-    
-    AdminPanel -->|REST API Requests| LaravelAPI
-    LaravelAPI -->|Persists Data| DB
-    LaravelAPI -->|Provisions Server Roles| BBridge
-    BBridge -->|Updates Roles| Server
+    Member -->|Opens Verification / !ping| BotDaemon
+    BotDaemon -->|Direct In-Memory Access| Eloquent
+    Eloquent -->|Queries| DB
+    AdminDashboard -->|REST API Requests| REST
+    REST -->|Queries| Eloquent
 ```
 
 ---
@@ -87,18 +78,13 @@ flowchart TD
 
 ```
 discord-bot-aries/
-├── src/                               # Discord Bot Engine (Node.js)
-│   ├── config/                        # Bot config & ship data dictionaries
-│   ├── handlers/                      # Slash commands, button interactions & messages
-│   ├── services/                      # OCR (Gemini/Cloud Vision), RBAC, battle records
-│   ├── utils/                         # Rate limiting, logger & input sanitizers
-│   └── index.js                       # Bot entrypoint & internal HTTP server (:3000)
-│
-├── mw-api/                            # Backend REST API (Laravel 11)
+├── mw-api/                            # Backend REST API & Native Bot (Laravel 12.71.0)
+│   ├── app/Console/Commands/          # Artisan Commands (RunDiscordBot.php)
 │   ├── app/Http/Controllers/Api/      # REST Controllers (RBAC, Tickets, Wars, Ships)
 │   ├── app/Models/                    # Eloquent Models & relationships
 │   ├── database/migrations/           # Agnostic database migrations
 │   ├── database/seeders/              # Ships, RBAC permissions, and backup seeders
+│   ├── composer.json                  # Dependencies (Laravel 12, DiscordPHP, Sanctum)
 │   └── routes/api.php                 # API route definitions
 │
 ├── mw-verification-admin/             # Admin Web Dashboard (React 18 + Vite + Tailwind)
@@ -106,6 +92,13 @@ discord-bot-aries/
 │   ├── src/layout/                    # Dashboard Layout, Sidebar & Header
 │   ├── src/pages/                     # Roles, Tickets, Members, Wars, Ships, Transcripts
 │   └── vite.config.ts                 # Builds directly to ../mw-api/public/
+│
+├── src/                               # Alternative Node.js Bot Engine
+│   ├── config/                        # Bot config & ship data dictionaries
+│   ├── handlers/                      # Slash commands, button interactions & messages
+│   ├── services/                      # OCR (Gemini/Cloud Vision), RBAC, battle records
+│   ├── utils/                         # Rate limiting, logger & input sanitizers
+│   └── index.js                       # Bot entrypoint & internal HTTP server (:3000)
 │
 ├── docs/                              # Comprehensive Documentation Hub
 │   ├── setup/                         # Prerequisites, Installation, Env Variables, Discord Setup
@@ -119,7 +112,7 @@ discord-bot-aries/
 ├── schema_v2.sql                      # Clan management & RBAC schema
 ├── schema_battle_records.sql          # Battle telemetry schema
 ├── schema_rank_history.sql            # Clan rank history schema
-└── package.json                       # Bot dependencies and npm scripts
+└── package.json                       # Root scripts
 ```
 
 ---
@@ -128,50 +121,41 @@ discord-bot-aries/
 
 ### 1. Prerequisites
 Make sure you have installed:
-- **Node.js**: `v18.0.0` or higher (Node 20+ LTS recommended)
-- **PHP**: `8.2.0` or higher with `pdo_sqlite`, `curl`, and `mbstring` extensions
+- **PHP**: `8.2.0` or higher (tested on `8.2.4` with `bcmath`, `curl`, `mbstring`, `pdo_sqlite` extensions)
 - **Composer**: `v2.5.0` or higher
+- **Node.js**: `v18.0.0` or higher (Node 20+ LTS recommended for building the admin panel)
 
 *(For full operating system requirements, see [PREREQUISITES.md](docs/setup/PREREQUISITES.md).)*
 
 ---
 
-### 2. Setup Bot & Dependencies
+### 2. Setup Laravel Backend & Bot Engine
 
 ```bash
 # 1. Clone repository
 git clone https://github.com/jhustinn/discord-bot-aries.git
 cd discord-bot-aries
 
-# 2. Install Bot dependencies
-npm install
-
-# 3. Configure Bot environment
-cp .env.example .env
-# Edit .env with your DISCORD_TOKEN, GUILD_ID, and GEMINI_API_KEY
-```
-
----
-
-### 3. Setup Laravel Backend API
-
-```bash
+# 2. Install Laravel dependencies
 cd mw-api
-
-# 1. Install PHP dependencies
 composer install
 
-# 2. Setup environment & application key
+# 3. Configure environment
 cp .env.example .env
 php artisan key:generate
 
-# 3. Run database migrations and seeders (SQLite default)
+# Edit mw-api/.env with your DISCORD_TOKEN, GUILD_ID, and GEMINI_API_KEY
+
+# 4. Run database migrations and seeders (SQLite default)
 php artisan migrate --seed
+
+# 5. Test bot connection
+php artisan discord:run --test
 ```
 
 ---
 
-### 4. Setup React Admin Dashboard
+### 3. Setup React Admin Dashboard
 
 ```bash
 cd ../mw-verification-admin
@@ -190,47 +174,42 @@ npm run build
 
 ## 🏃 Running the Services
 
-### Option A: Development Mode (3 Independent Terminals)
+### Option A: Full Laravel Monolith (Recommended)
 
-* **Terminal 1 (Discord Bot)**:
+* **Terminal 1 (Native Discord Bot Daemon)**:
   ```bash
-  npm start
-  # Bot runs on port 3000
+  cd mw-api
+  php artisan discord:run
   ```
 
-* **Terminal 2 (Laravel API)**:
+* **Terminal 2 (Laravel API & Admin Web Server)**:
   ```bash
   cd mw-api
   php artisan serve --port=8000 --no-reload
   ```
 
-* **Terminal 3 (Admin Dashboard Dev Server)**:
-  ```bash
-  cd mw-verification-admin
-  npm run dev
-  # Admin UI available at http://localhost:5173
-  ```
+* **Admin Dashboard & API**: [http://localhost:8000/](http://localhost:8000/)  
+* **Test Command**: Type `!ping` in your Discord server!
 
-### Option B: Production Single-Port Deployment
-After running `npm run build` in `mw-verification-admin`, the React application is served directly by Laravel:
-* **Admin Dashboard & API**: `http://localhost:8000/`
-* **Bot Service**: Background via PM2 or systemd (`npm start`)
+### Option B: Development Mode with Vite HMR
+* **Terminal 1**: `cd mw-api && php artisan discord:run`
+* **Terminal 2**: `cd mw-api && php artisan serve --port=8000 --no-reload`
+* **Terminal 3**: `cd mw-verification-admin && npm run dev` (Access at [http://localhost:5173](http://localhost:5173))
 
-*(For full production process supervisor configs, see [PROCESS_MANAGEMENT.md](docs/running/PROCESS_MANAGEMENT.md).)*
+*(For full production process supervisor configs with PM2 or systemd, see [PROCESS_MANAGEMENT.md](docs/running/PROCESS_MANAGEMENT.md).)*
 
 ---
 
-## 🤖 Discord Slash Commands
+## 🤖 Discord Commands
 
-| Command | Permission | Description |
+| Command | Type | Description |
 | :--- | :--- | :--- |
-| `/verify-panel` | Administrator | Spawns the verification panel embed with the interactive "Verifikasi Akun" button. |
-| `/verify-approve` | Staff / Admin | Approves a ticket, grants the Discord verified role, and archives the channel. |
-| `/verify-reject` | Staff / Admin | Rejects a ticket with an optional reason. |
-| `/verify-close` | Staff / Admin | Closes and locks the ticket channel, preventing further messages. |
-| `/stats` | Everyone | Displays server verification metrics and statistics. |
-| `/clan-register` | Verified Member | Registers player into the clan war availability roster. |
-| `/score-record` | Verified Member | Uploads post-match screenshot for OCR damage & kill extraction. |
+| `!ping` | Text Command | Health check command replying with Laravel version, PHP version, and live DB stats. |
+| `/verify-panel` | Slash Command | Spawns the verification panel embed with the interactive "Verifikasi Akun" button. |
+| `/verify-approve` | Slash Command | Approves a ticket, grants the Discord verified role, and archives the channel. |
+| `/verify-reject` | Slash Command | Rejects a ticket with an optional reason. |
+| `/verify-close` | Slash Command | Closes and locks the ticket channel, preventing further messages. |
+| `/stats` | Slash Command | Displays server verification metrics and statistics. |
 
 ---
 
@@ -252,7 +231,7 @@ All technical documentation is organized in the [`docs/`](docs/) directory:
   * [Schema Reference & Data Dictionary](docs/database/SCHEMA_REFERENCE.md)
   * [Migrations & Seeders Guide](docs/database/MIGRATIONS_AND_SEEDERS.md)
 * 🏛️ **System Architecture**
-  * [Tri-Tier Architecture & Data Flow](docs/architecture/ARCHITECTURE.md)
+  * [Tri-Tier & Dual-Engine Architecture](docs/architecture/ARCHITECTURE.md)
   * [Unified 1:1 RBAC System](docs/architecture/RBAC_SYSTEM.md)
   * [Dual-Engine OCR Pipeline](docs/architecture/OCR_PIPELINE.md)
 * 📄 **Product Specifications**
